@@ -4,7 +4,7 @@ import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [isReqSending, setIsReqSending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const enteredEmail = useRef();
   const enteredPassword = useRef()
@@ -15,29 +15,58 @@ const AuthForm = () => {
 
   const submitFormHandler = async(e) => {
     try {
-      setIsReqSending(true)
       e.preventDefault();
-      const obj = {
-        email: enteredEmail.current.value,
-        password: enteredPassword.current.value
-      }
       
-      const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]', {
-        method: 'POST',
-        headers: { 
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-      })
-      if (!res.ok) {
-        throw new Error('Request failed!');
+      setIsLoading(true);
+      if(isLogin) {
+        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC8IykqejjI79ePKYsCrYciX6Vs8G6nySI`, {
+          method: 'POST',
+          body: JSON.stringify({
+            email: enteredEmail.current.value,
+            password: enteredPassword.current.value,
+            returnSecureToken: true
+          }),
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+        const data = await res.json();
+        if(!res.ok) {
+          throw new Error(`Authentication failed`)
+        }
+        alert(`Successfully logged in ${data.email}`)
+        console.log('data',data.idToken)
+        localStorage.setItem('idToken', JSON.stringify(data.idToken));
+      }else {
+        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC8IykqejjI79ePKYsCrYciX6Vs8G6nySI`, {
+          method: 'POST',
+          body: JSON.stringify({
+            email: enteredEmail.current.value,
+            password: enteredPassword.current.value,
+            returnSecureToken: true
+          }),
+          headers: { 
+            'content-type': 'application/json'
+          },
+        })
+        
+        const data = await res.json();
+
+        if(!res.ok) {
+          let errorMessage = `Authentication Failed`
+          if(data && data.error && data.error.message) {
+            throw new Error(data.error.message)
+          }
+          throw new Error(errorMessage)
+        }
+        alert(`Successfully created your account ${data.email}`);
       }
-      const data = await res.json();
-      console.log('data',data);
-      setIsReqSending(false);
     }catch(err) {
       alert(err.message)
     }
+    enteredEmail.current.value = '';
+    enteredPassword.current.value = '';
+    setIsLoading(false);
   }
 
   return (
@@ -58,7 +87,8 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-          {isReqSending ? <p style={{color: 'white'}}>Sending Request....</p> : <button type='submit'>Submit</button>}
+          {!isLoading && <button type='submit'>{isLogin ? `Login`:'Create Account'}</button>}
+          {isLoading && <p>Sending request....</p>}
           <button
             type='button'
             className={classes.toggle}
