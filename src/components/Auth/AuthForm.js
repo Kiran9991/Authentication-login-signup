@@ -53,7 +53,6 @@ const AuthForm = () => {
         alert(`Successfully created your account ${data.email}`);
       }
       authCtx.login(data.idToken)
-      localStorage.setItem('token', data.idToken);
       history.replace('/');
 
       enteredEmail.current.value = "";

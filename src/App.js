@@ -9,9 +9,6 @@ import AuthContext from "./components/Context/auth-context";
 
 function App() {
   const authCtx = useContext(AuthContext);
-  const token = localStorage.getItem('token')
-  
-  if(token) authCtx.login(token);
   
   return (
     <Layout>
