@@ -1,12 +1,12 @@
 import MainNavigation from './MainNavigation';
-import AuthProvider from '../Context/AuthProvider';
+import { Fragment } from 'react';
 
 const Layout = (props) => {
   return (
-    <AuthProvider>
+    <Fragment>
       <MainNavigation />
       <main>{props.children}</main>
-    </AuthProvider>
+    </Fragment>
   );
 };
 

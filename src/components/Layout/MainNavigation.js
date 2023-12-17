@@ -7,20 +7,12 @@ import AuthContext from "../Context/auth-context";
 const MainNavigation = () => {
   const authCtx = useContext(AuthContext);
 
-  const logoutHandler = () => {
-    authCtx.removeId();
-  }
+  const isLoggedIn = authCtx.isLoggedIn;
 
-  let content = (
-    <>
-      <li>
-        <Link to="/profile">Profile</Link>
-      </li>
-      <li>
-        <button onClick={logoutHandler}>Logout</button>
-      </li>
-    </>
-  );
+  const logoutHandler = () => {
+    authCtx.logout();
+  };
+
   return (
     <header className={classes.header}>
       <Link to="/">
@@ -28,10 +20,21 @@ const MainNavigation = () => {
       </Link>
       <nav>
         <ul>
-          {!authCtx.idToken && <li>
-            <Link to="/auth">Login</Link>
-          </li>}
-          {authCtx.idToken && content}
+          {!isLoggedIn && (
+            <li>
+              <Link to="/auth">Login</Link>
+            </li>
+          )}
+          {isLoggedIn && (
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+          )}
+          {isLoggedIn && (
+            <li>
+              <button onClick={logoutHandler}>Logout</button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

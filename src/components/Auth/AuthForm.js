@@ -42,9 +42,7 @@ const AuthForm = () => {
 
       if (!res.ok) {
         let errorMessage = `Authentication Failed`;
-        if (data && data.error && data.error.message) {
-          throw new Error(data.error.message);
-        }
+
         throw new Error(errorMessage);
       }
       if (isLogin) {
@@ -52,7 +50,7 @@ const AuthForm = () => {
       } else {
         alert(`Successfully created your account ${data.email}`);
       }
-      authCtx.storeId(data.idToken)
+      authCtx.login(data.idToken)
 
       enteredEmail.current.value = "";
       enteredPassword.current.value = "";
