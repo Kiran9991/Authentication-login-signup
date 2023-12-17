@@ -1,9 +1,11 @@
 import { useState, useRef, useContext } from "react";
+import { useHistory } from "react-router-dom";
 
 import classes from "./AuthForm.module.css";
 import AuthContext from "../Context/auth-context";
 
 const AuthForm = () => {
+  const history = useHistory();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const authCtx = useContext(AuthContext);
@@ -51,6 +53,7 @@ const AuthForm = () => {
         alert(`Successfully created your account ${data.email}`);
       }
       authCtx.login(data.idToken)
+      history.replace('/');
 
       enteredEmail.current.value = "";
       enteredPassword.current.value = "";

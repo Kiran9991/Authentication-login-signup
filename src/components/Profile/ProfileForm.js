@@ -1,8 +1,10 @@
 import { useContext, useRef } from 'react';
 import classes from './ProfileForm.module.css';
 import AuthContext from '../Context/auth-context';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const ProfileForm = () => {
+  const history = useHistory();
   const newPasswordInputRef = useRef();
   const authCtx = useContext(AuthContext);
 
@@ -23,9 +25,7 @@ const ProfileForm = () => {
       },
     });
     alert(`Successfully updated password`);
-    const data = await res.json();
-    console.log('resp',data);
-    newPasswordInputRef.current.value = '';
+    history.replace('/');
   }
 
   return (
