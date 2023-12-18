@@ -9,6 +9,13 @@ import AuthContext from "./components/Context/auth-context";
 
 function App() {
   const authCtx = useContext(AuthContext);
+
+  if(authCtx.isLoggedIn) {
+    setTimeout(() => {
+      localStorage.removeItem('token')
+      console.log('logout');
+    },10000)
+  }
   
   return (
     <Layout>
